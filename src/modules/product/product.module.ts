@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
+import { extname } from 'path';
 import { ProductController } from './product.controller';
 import { ProductService } from './product.service';
 import { Product, ProductSchema } from './schemas/product.schema';
@@ -23,7 +24,8 @@ import { Category, CategorySchema } from '../category/schemas/category.schema';
             destination,
             filename: (_req, file, cb) => {
               const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
-              cb(null, `${uniqueSuffix}-${file.originalname}`);
+              const extension = file.originalname ? extname(file.originalname) : '';
+              cb(null, `${uniqueSuffix}${extension}`);
             },
           }),
         };
@@ -34,4 +36,4 @@ import { Category, CategorySchema } from '../category/schemas/category.schema';
   providers: [ProductService],
   exports: [ProductService, MongooseModule],
 })
-export class ProductModule {}
+export class ProductModule { }
